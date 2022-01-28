@@ -6,7 +6,7 @@ using namespace std;
 
 
 matrix<int> a(3,3);
-matrix<int> b(3,3);
+matrix<int> b(4,3);
 
 
 int main(){
@@ -29,7 +29,10 @@ int main(){
     
 
 a.print();
-(5 * a).print();
+
+(b + a).print();
+
+
 std::cout << "Hola mundo";
     
 }

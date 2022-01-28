@@ -20,8 +20,9 @@ class matrix{
     //Constructores
     matrix(int _rows, int _cols);//constructor por defecto
 
-    //Acceso y representacion
+    //Acceso Llenado y representacion
     T& operator()(int row,int col);
+    //sobrecargar = o <<
     void print();
 
     //Funciones operadoras
@@ -109,12 +110,20 @@ matrix<U> operator*(matrix<U> a, matrix<U> b){
 }
 
 template<class U>//PRODUCTO POR ESCALAR definida en un sentido hay que cambiarlo
-matrix<U> operator+(U a, matrix<U> b){
-    for(int i= 0; i < a.rows; i++){
-            for(int j = 0; j < a.cols; j++){
+matrix<U> operator*(U a, matrix<U> b){
+    for(int i= 0; i < b.rows; i++){
+            for(int j = 0; j < b.cols; j++){
                 b(i,j) = a* b(i,j);//Operation
             }
         }
     return b;
   
 }
+
+
+/*Cosas importantes a implementar
+1-Asignacion de valores por medio de lista, inicializador, coge lista, chequea el numero de elementos si coinciden asigna uno a uno en orden de lectura
+2-Construcíon de matriz por columnas
+3-Metodo de Gauss en archivo distinto, ha de trabajar con la interfaz proporcionada por la clase matriz
+3bis-Por tanto implementar acceso a fila y reorganizacion para pivotamiento parcial
+*/
