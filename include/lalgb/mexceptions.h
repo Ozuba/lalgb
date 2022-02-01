@@ -1,8 +1,12 @@
+#ifndef MEXCEPTIONS_H
+#define MEXCEPTIONS_H
+
+
 #include <stdio.h>
 #include <iostream>
 using namespace std;
 
-#define ERRORMSGSIZE 50
+#define ERRORMSGSIZE 100
 
 
 class MatrixError {//Clase base de Errores
@@ -22,7 +26,7 @@ class inv_size : public MatrixError //Tamaño Invalido
 {
     public:
     inv_size(int r1 ,int c1,int r2,int c2) throw() {
-    sprintf(error,"Different matrix sizes: m1:%dx%d  m2:%d,%d",r1,c1,r2,c2);
+    sprintf(error,"Different matrix sizes: m1:%dx%d  m2:%dx%d",r1,c1,r2,c2);
     }
  
 };
@@ -31,9 +35,11 @@ class inc_size : public MatrixError //Tamaño Incorrecto
 {
     public:
     inc_size(int r1 ,int c1,int r2,int c2) throw() {
-    sprintf(error,"Incompatible Matrix Sizes for Product: m1:%dx%d  m2:%d,%d",r1,c1,r2,c2);
+    sprintf(error,"Incompatible Matrix Sizes for Product: m1:%dx%d  m2:%dx%d",r1,c1,r2,c2);
     }
  
 };
 
-//Implementar Fuera de rango
+//Implementar Indice Invalido
+
+#endif

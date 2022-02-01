@@ -1,15 +1,23 @@
+#ifndef MATRIX_H//Inclusion guard proteje el archivo de ser incluido varias veces
+#define MATRIX_H
+
+
+
 #include <stdio.h>
 #include <iostream>
+#include <string.h>
 #include "mexceptions.h"
+#include "rows_cols.h"
+
 using namespace std;
 
-
+//Row storage order implementar en un futuro almacenamiento por columnas, eficiencia de acceso a vectores
 
 
 template<class T>
 class matrix{
 
-    private:
+    protected:
     int rows, cols;//Implementar acceso publico
     T* data; //Puntero a datos matriz
     T* allocate(int _rows, int _cols);
@@ -21,9 +29,13 @@ class matrix{
     matrix(int _rows, int _cols);//constructor por defecto
 
     //Acceso Llenado y representacion
-    T& operator()(int row,int col);
-    //sobrecargar = o <<
-    void print();
+    T& operator()(int row,int col);//operador de acceso implementar que con Cordenadas -1 acceda a toda la fila?
+    void operator<<(T* list);//llenado por array
+    void print();//imprimir
+
+    //Modificadores
+    void setCol(col<T> _col);
+    void setRow(row<T> _row);
 
     //Funciones operadoras
 
@@ -56,8 +68,12 @@ template<class T>
 T& matrix<T>::operator()(int row,int col){
     return this->get(row,col);
 }
+template<class T>
+void matrix<T>::operator<<(T* list){
+//no imlementa chequeo de boundaries
+    memcpy(data,list,rows*cols*sizeof(T));//copia los arrays de datos
 
-
+}
 //////////////////////////////////[Miscelaneo]///////////////////////////////////////////////////////
 template<class T>
 void matrix<T>::print(){
@@ -122,8 +138,8 @@ matrix<U> operator*(U a, matrix<U> b){
 
 
 /*Cosas importantes a implementar
-1-Asignacion de valores por medio de lista, inicializador, coge lista, chequea el numero de elementos si coinciden asigna uno a uno en orden de lectura
-2-Construcíon de matriz por columnas
-3-Metodo de Gauss en archivo distinto, ha de trabajar con la interfaz proporcionada por la clase matriz
+2-Construcíon de matriz por columnas para ello implementar la subclase columna
+3-Metodo de Gauss en archivo distinto, ha de trabajar con la interfaz proporcionada por la clase matriz, aprovechar la interfaz de manera que sirva para el calculo de inversas
 3bis-Por tanto implementar acceso a fila y reorganizacion para pivotamiento parcial
 */
+#endif
