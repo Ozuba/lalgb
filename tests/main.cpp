@@ -5,8 +5,8 @@
 using namespace std;
 
 
-matrix<int> a(3,3);
-col<int> b(3);
+Matrix<int> a(3,3);
+Col<int> b(3);
 
 int ad[10] = {1,2,3,
               4,5,6,
@@ -16,12 +16,17 @@ int coldata[] = {1,6,2};
 
 int main(){
   
-a << ad;// volcar contenidos de la matrizç
+a << ad;// volcar contenidos de la matriz
 b << coldata;
+
 a.print();
 b.print();
+Col<int> c = a.col(2);
+a.setcol(1,c);
 try{
-(b*a).print();
+   
+(a).print();
+cout << "HOla";
 }catch(MatrixError error){
 cout << error.watch();
     

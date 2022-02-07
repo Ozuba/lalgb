@@ -5,30 +5,33 @@
 using namespace std;
 
 //la memoria reservada permite usar directamente el operador << para introducir datos ya que en ambos casos los huecos de memoria son contiguos al ser unidimensional
-template<class T> class matrix;
+template<class T> class Matrix;
 
 
 
 
 
 template<class T>
-class row : public matrix<T> {
+class Row : public Matrix<T> {
     public:
-        row(int _col) : matrix<T>(1,_col){};//llama al constructor base con los argumentos
+        Row(int _col) : Matrix<T>(1,_col){};//llama al constructor base con los argumentos
+        Row(int _col,T* rowptr) : Matrix<T>(1,_col,rowptr){};//Construye la columna y apunta a la direccion dada
+        
         void print();//redefinimos el operador impresión
 };
 
 template<class T>
-class col : public matrix<T> {
+class Col : public Matrix<T> {
     public:
-        col(int _row) : matrix<T>(_row,1){};//llama al constructor base con los argumentos
+        Col(int _row) : Matrix<T>(_row,1){};//llama al constructor base para matriz vacia
+        Col(int _row,T* colptr) : Matrix<T>(_row,1,colptr){};
 };
 
 
 
 ///////////////////////////////////////////////////[ROWS]/////////////////////////////////////////////////////////////////////
 template<class T>
-void row<T>::print(){
+void Row<T>::print(){
 cout << '\n';//Nueva linea
     for(int j = 0; j < this->cols; j++)
     {
