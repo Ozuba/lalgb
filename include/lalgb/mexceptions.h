@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include "matrix.h"
 using namespace std;
 
 #define ERRORMSGSIZE 100
@@ -36,6 +37,15 @@ class inc_size : public MatrixError //Tamaño Incorrecto
     public:
     inc_size(int r1 ,int c1,int r2,int c2) throw() {
     sprintf(error,"Incompatible Matrix Sizes for Product: m1:%dx%d  m2:%dx%d",r1,c1,r2,c2);
+    }
+ 
+};
+
+class non_regular : public MatrixError //Matriz no regular
+{
+    public:
+    non_regular() throw() {
+    sprintf(error,"Non regular Matrix where required");
     }
  
 };
