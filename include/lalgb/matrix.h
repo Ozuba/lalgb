@@ -247,7 +247,7 @@ Matrix<U> operator*(U a, Matrix<U> b)
 
 /*Cosas importantes a implementar
 Submatrices
-Constructor copia
+Multithreading para el producto hacer tests de duración de productos
 3-Metodo de Gauss en archivo distinto, ha de trabajar con la interfaz proporcionada por la clase matriz, aprovechar la interfaz de manera que sirva para el calculo de inversas
 3bis-Por tanto implementar acceso a fila y reorganizacion para pivotamiento parcial
 */

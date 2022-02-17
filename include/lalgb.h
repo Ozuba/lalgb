@@ -6,7 +6,7 @@
 #include "lalgb/rows_cols.h"//El orden de inclusion importa 
 #include "lalgb/transpose.h"
 #include "lalgb/gaussjordan.h"
-
+#include "lalgb/matrixtypes.h"
 
 
 

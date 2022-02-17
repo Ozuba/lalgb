@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "matrix.h"
 using namespace std;
 
 #define ERRORMSGSIZE 100
