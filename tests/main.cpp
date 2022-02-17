@@ -17,9 +17,9 @@ int main()
 
     a << ad; // volcar contenidos de la matriz
     b << coldata;
-    
-    a.print();
+    Matrix<float> g = rand(1500);
+    (g*g).print();
     b.print();
  
     (solve(a,b)).print();
-}
+}s
