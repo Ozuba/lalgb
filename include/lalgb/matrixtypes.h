@@ -6,13 +6,17 @@
 
 // Unitaria de dimension n
 template <class T>
-Matrix<T> ones(int n)
+Matrix<T> ones(int n,int m = -1)
 {
+    if (m == -1)
+    {
+        m = n;
+    }
     Matrix<T> ones(n, n);
     int i = -1;
     while (i++ < n)
     {
-        ones(i, i) = 1;
+        ones(i, i) = static_cast<T> (1);
     }
     return ones;
 }
