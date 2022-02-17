@@ -25,7 +25,7 @@ public:
     // Constructores
     Matrix(int _rows, int _cols);               // constructor por defecto
     Matrix(int _rows, int _cols, T *matrixptr); // constructor con puntero a datos, cuidado con estos constructores no chequean el tamaño en destino
-    Matrix(const Matrix<T> & m);                  // Constructor copia
+    Matrix(const Matrix<T> &m);                 // Constructor copia
     // Columnas y filas acceso publico con referencia constante
     const int &rown = rows; // Rownumber
     const int &coln = cols; // Colnumber
@@ -37,7 +37,6 @@ public:
     // Operadores de acceso
     T &operator()(int row, int col); // operador de acceso implementar que con Cordenadas -1 acceda a toda la fila?
 
-
     // crea un objeto row y col con copia de memoria de dicho indice, no mira si el indice es valido
     Col<T> col(int j);
     Row<T> row(int i);
@@ -48,11 +47,13 @@ public:
     // Funciones operadoras
 
     template <class U>
-    friend Matrix<U> operator+(Matrix<U> a, Matrix<U> b);
+    friend Matrix<U> operator+(Matrix<U> a, Matrix<U> b); // SUMA
     template <class U>
-    friend Matrix<U> operator-(Matrix<U> a, Matrix<U> b);
+    friend Matrix<U> operator-(Matrix<U> a, Matrix<U> b); // RESTA
     template <class U>
-    friend Matrix<U> operator*(Matrix<U> a, Matrix<U> b);
+    friend Matrix<U> operator*(Matrix<U> a, Matrix<U> b); // PRODUCTO
+    template <class U>
+    friend Matrix<U> operator^(Matrix<U> m, int n); // POTENCIA
     template <class U>
     friend Matrix<U> operator*(U a, Matrix<U> b); // Definimos producto por escalar dando por escalar un unico elemento del tipo de matriz
 };
@@ -65,14 +66,14 @@ T *Matrix<T>::allocate(int _rows, int _cols)
 
 /////////////////////////////////[Constructores]////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <class T>//Defecto
+template <class T> // Defecto
 Matrix<T>::Matrix(int _rows, int _cols)
 {
     rows = _rows;
     cols = _cols;
     data = allocate(rows, cols);
 }
-template <class T>//Por array
+template <class T> // Por array
 Matrix<T>::Matrix(int _rows, int _cols, T *matrixptr)
 {
     rows = _rows;
@@ -81,8 +82,8 @@ Matrix<T>::Matrix(int _rows, int _cols, T *matrixptr)
     memcpy(data, matrixptr, rows * cols * sizeof(T)); // copia de datos en bruto
 }
 
-template <class T>//Copia
-Matrix<T>::Matrix(const Matrix<T>& m)
+template <class T> // Copia
+Matrix<T>::Matrix(const Matrix<T> &m)
 {
     rows = m.rown;
     cols = m.coln;
@@ -163,7 +164,6 @@ void Matrix<T>::print()
     }
 }
 
-
 /////////////////////////////////////////////////////////[Operadores Aritmeticos]////////////////////////////////////////////
 template <class U> // SUMA
 Matrix<U> operator+(Matrix<U> a, Matrix<U> b)
@@ -242,6 +242,29 @@ Matrix<U> operator*(U a, Matrix<U> b)
         }
     }
     return b;
+}
+
+template <class U> // POTENCIA
+Matrix<U> operator^(Matrix<U> m, int n)
+{
+    if (n == 1)
+    {
+        return m; // Fin de recursion
+    }
+    else if (n == 0)
+    {
+        Matrix<U> ones(m.rown, m.coln);
+        int i = -1;
+        while (i++ < m.rown)
+        {
+            ones(i, i) = static_cast<U>(1);
+        } // Matriz identidad al elevar a 0
+        return ones;
+    }
+    else
+    {
+        return m * operator^(m, n - 1); // Recursion
+    }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
