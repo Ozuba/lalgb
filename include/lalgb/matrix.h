@@ -26,6 +26,9 @@ public:
     Matrix(int _rows, int _cols);               // constructor por defecto
     Matrix(int _rows, int _cols, T *matrixptr); // constructor con puntero a datos, cuidado con estos constructores no chequean el tamaño en destino
     Matrix(const Matrix<T> &m);                 // Constructor copia
+    virtual ~Matrix();                          // Destructor
+
+
     // Columnas y filas acceso publico con referencia constante
     const int &rown = rows; // Rownumber
     const int &coln = cols; // Colnumber
@@ -91,6 +94,12 @@ Matrix<T>::Matrix(const Matrix<T> &m)
     memcpy(data, m.data, rows * cols * sizeof(T));
 }
 
+template <class T> // Destructor
+Matrix<T>::~Matrix(){
+
+delete [] data;
+
+}
 /////////////////////////////////[Operadores de acceso]/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
 T &Matrix<T>::operator()(int row, int col)
@@ -270,8 +279,9 @@ Matrix<U> operator^(Matrix<U> m, int n)
 
 /*Cosas importantes a implementar
 Submatrices
+inicializacion por initializer list
 Multithreading para el producto hacer tests de duración de productos
-3-Metodo de Gauss en archivo distinto, ha de trabajar con la interfaz proporcionada por la clase matriz, aprovechar la interfaz de manera que sirva para el calculo de inversas
-3bis-Por tanto implementar acceso a fila y reorganizacion para pivotamiento parcial
+Metodo QR sobre una matriz para obtener despues los valores propios por dicho metodo
+Implementar trianguularizacion con gauss, pivotamiento parcial y estabilidad numerica
 */
 #endif
