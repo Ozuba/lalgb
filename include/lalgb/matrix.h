@@ -240,6 +240,24 @@ Matrix<U> operator*(Matrix<U> a, Matrix<U> b)
     }
 }
 
+
+template <class U> // PRODUCTO MATRICIAL FILA POR COLUMNA (Devuelve tipo T)
+U operator*(Row<U> a, Col<U> b)
+{
+    if (a.cols == b.rows)
+    {
+        float c = 0;
+        for(int k = 0;k < a.cols; k++){
+            c += a.get(0,k)* b.get(k,0);
+        }
+        return c;
+    }
+    else
+    {
+        throw inc_size(a.rows, a.cols, b.rows, b.cols);
+    }
+}
+
 template <class U> // PRODUCTO POR ESCALAR definida en un sentido hay que cambiarlo
 Matrix<U> operator*(U a, Matrix<U> b)
 {

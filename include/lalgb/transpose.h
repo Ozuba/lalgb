@@ -18,5 +18,18 @@ Matrix<T> transpose(Matrix<T> m)
   }
   return t;
 }
+/////////////////////////////////////////////[Trasposiciones Fila-Columna]///////////////////////////////
+template <class T>
+Row<T> transpose(Col<T> m)
+{
+  Row<T> t = m;//Funciona pq los datos son contiguas en ambas
+  return t;
+}
 
+template <class T>
+Col<T> transpose(Row<T> m)
+{
+  Row<T> t = m; 
+  return t;
+}
 #endif
