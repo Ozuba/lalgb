@@ -20,7 +20,22 @@ Matrix<T> ones(int n,int m = -1)
     }
     return ones;
 }
-
+//Matriz de 0
+template <class T>
+Matrix<T> zeros(int n,int m = -1)
+{
+    if (m == -1)
+    {
+        m = n;
+    }
+    Matrix<T> zeros(n, n);
+    int i = -1;
+    while (i++ < n)
+    {
+        zeros(i, i) = static_cast<T> (0);
+    }
+    return zeros;
+}
 
 // Random Matrix
 Matrix<float> rand(int n, int m = -1)

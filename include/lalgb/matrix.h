@@ -10,7 +10,7 @@
 using namespace std;
 
 // Row storage order implementar en un futuro almacenamiento por columnas, eficiencia de acceso a vectores
-
+//RECONVERTIR LOS OPERADORES EN FRIENDS Y USAR FUNCIONES VIRTUAALES PARA QUE CUANDO SE REFIERA A UNA COLUMNA COMO SU CLASE BASE MATRIZ SE DERIVE A LAS FUNCIONES DE LA COLUMNA
 template <class T>
 class Matrix
 {
@@ -28,14 +28,14 @@ public:
     Matrix(const Matrix<T> &m);                 // Constructor copia
     virtual ~Matrix();                          // Destructor
 
-
     // Columnas y filas acceso publico con referencia constante
     const int &rown = rows; // Rownumber
     const int &coln = cols; // Colnumber
 
     // Acceso Llenado y representacion
-    void operator<<(T *list); // llenado por array
-    void print();             // imprimir
+    void operator<<(T *list);          // llenado por array
+    void print();                      // imprimir
+    void operator=(const Matrix<T> m); // Copia de datos entre matrices existentes
 
     // Operadores de acceso
     T &operator()(int row, int col); // operador de acceso implementar que con Cordenadas -1 acceda a toda la fila?
@@ -47,24 +47,22 @@ public:
     void setcol(int j, Col<T> _col);
     void setrow(int i, Row<T> _row);
 
+    //Norma y traza
+    T norm(Matrix<T> A);
+    T trace(Matrix<T> A);
     // Funciones operadoras
 
-    template <class U>
-    friend Matrix<U> operator+(Matrix<U> a, Matrix<U> b); // SUMA
-    template <class U>
-    friend Matrix<U> operator-(Matrix<U> a, Matrix<U> b); // RESTA
-    template <class U>
-    friend Matrix<U> operator*(Matrix<U> a, Matrix<U> b); // PRODUCTO
-    template <class U>
-    friend Matrix<U> operator^(Matrix<U> m, int n); // POTENCIA
-    template <class U>
-    friend Matrix<U> operator*(U a, Matrix<U> b); // Definimos producto por escalar dando por escalar un unico elemento del tipo de matriz
+    Matrix<T> operator+(Matrix<T> b); // SUMA
+    Matrix<T> operator-(Matrix<T> b); // RESTA
+    Matrix<T> operator*(Matrix<T> b); // PRODUCTO
+    Matrix<T> operator^(int n);       // POTENCIA
+    Matrix<T> operator*(T a);         // Definimos producto por escalar dando por escalar un unico elemento del tipo de matriz
 };
 ///////////////////////////////////////[Funciones de reserva de memoria]///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
 T *Matrix<T>::allocate(int _rows, int _cols)
 {
-    return new T[_rows * _cols]; // reserva espacio para todos los elementos
+    return new T[_rows * _cols]; // reserva espacio para todos los elementos no garantiza que este a 0
 }
 
 /////////////////////////////////[Constructores]////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,10 +93,10 @@ Matrix<T>::Matrix(const Matrix<T> &m)
 }
 
 template <class T> // Destructor
-Matrix<T>::~Matrix(){
+Matrix<T>::~Matrix()
+{
 
-delete [] data;
-
+    delete[] data;
 }
 /////////////////////////////////[Operadores de acceso]/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
@@ -173,62 +171,74 @@ void Matrix<T>::print()
     }
 }
 
+template <class T> // PRODUCTO POR ESCALAR definida en un sentido hay que cambiarlo
+void Matrix<T>::operator=(Matrix<T> m)
+{
+    if (rows == m.rows && cols == m.cols)
+    {
+        memcpy(data, m.data, rows * cols * sizeof(T));
+    }
+    else
+    {
+        throw inv_size(rows, cols, m.rows, m.cols);
+    }
+}
 /////////////////////////////////////////////////////////[Operadores Aritmeticos]////////////////////////////////////////////
-template <class U> // SUMA
-Matrix<U> operator+(Matrix<U> a, Matrix<U> b)
+template <class T> // SUMA
+Matrix<T> Matrix<T>::operator+(Matrix<T> b)
 {
-    if (a.rows == b.rows && a.cols == b.cols)
+    if (rows == b.rows && cols == b.cols)
     { // Si esta permitida
-        Matrix<U> c(a.rows, b.cols);
-        for (int i = 0; i < a.rows; i++)
+        Matrix<T> c(rows, b.cols);
+        for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < a.cols; j++)
+            for (int j = 0; j < cols; j++)
             {
-                c(i, j) = a(i, j) + b(i, j); // Suma elementos
+                c(i, j) = get(i, j) + b(i, j); // Suma elementos
             }
         }
         return c;
     }
     else
     {
-        throw inv_size(a.rows, a.cols, b.rows, b.cols);
+        throw inv_size(rows, cols, b.rows, b.cols);
     }
 }
 
-template <class U> // RESTA
-Matrix<U> operator-(Matrix<U> a, Matrix<U> b)
+template <class T> // RESTA
+Matrix<T> Matrix<T>::operator-(Matrix<T> b)
 {
-    if (a.rows == b.rows && a.cols == b.cols)
+    if (rows == b.rows && cols == b.cols)
     { // Si esta permitida
-        Matrix<U> c(a.rows, b.cols);
-        for (int i = 0; i < a.rows; i++)
+        Matrix<T> c(rows, b.cols);
+        for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < a.cols; j++)
+            for (int j = 0; j < cols; j++)
             {
-                c(i, j) = a(i, j) - b(i, j); // Suma elementos
+                c(i, j) = get(i, j) - b(i, j); // Suma elementos
             }
         }
         return c;
     }
     else
     {
-        throw inv_size(a.rows, a.cols, b.rows, b.cols);
+        throw inv_size(rows, cols, b.rows, b.cols);
     }
 }
 
-template <class U> // PRODUCTO MATRICIAL
-Matrix<U> operator*(Matrix<U> a, Matrix<U> b)
+template <class T> // PRODUCTO MATRICIAL
+Matrix<T> Matrix<T>::operator*(Matrix<T> b)
 {
-    if (a.cols == b.rows)
+    if (cols == b.rows)
     {
-        Matrix<U> c(a.rows, b.cols); // crea matriz resultado
+        Matrix<T> c(rows, b.cols); // crea matriz resultado
         for (int i = 0; i < c.rows; i++)
         {
             for (int j = 0; j < c.cols; j++)
             {
-                for (int k = 0; k < a.cols; k++)
+                for (int k = 0; k < cols; k++)
                 {
-                    c(i, j) += a(i, k) * b(k, j); // Recorre los elementos
+                    c(i, j) += get(i, k) * b(k, j); // Recorre los elementos
                 }
             }
         }
@@ -236,64 +246,79 @@ Matrix<U> operator*(Matrix<U> a, Matrix<U> b)
     }
     else
     {
-        throw inc_size(a.rows, a.cols, b.rows, b.cols);
+        throw inc_size(rows, cols, b.rows, b.cols);
     }
 }
 
-
-template <class U> // PRODUCTO MATRICIAL FILA POR COLUMNA (Devuelve tipo T)
-U operator*(Row<U> a, Col<U> b)
+template <class T> // PRODUCTO POR ESCALAR definida en un sentido hay que cambiarlo
+Matrix<T> Matrix<T>::operator*(T a)
 {
-    if (a.cols == b.rows)
-    {
-        float c = 0;
-        for(int k = 0;k < a.cols; k++){
-            c += a.get(0,k)* b.get(k,0);
-        }
-        return c;
-    }
-    else
-    {
-        throw inc_size(a.rows, a.cols, b.rows, b.cols);
-    }
-}
+    Matrix<T> c(rows, cols); // crea matriz resultado
 
-template <class U> // PRODUCTO POR ESCALAR definida en un sentido hay que cambiarlo
-Matrix<U> operator*(U a, Matrix<U> b)
-{
-    for (int i = 0; i < b.rows; i++)
+    for (int i = 0; i < rows; i++)
     {
-        for (int j = 0; j < b.cols; j++)
+        for (int j = 0; j < cols; j++)
         {
-            b(i, j) = a * b(i, j); // Operation
+            c(i, j) = a * get(i, j); // Operation
         }
     }
-    return b;
+    return c;
 }
 
-template <class U> // POTENCIA
-Matrix<U> operator^(Matrix<U> m, int n)
+template <class T> // POTENCIA
+Matrix<T> Matrix<T>::operator^(int n)
 {
+    Matrix<T> c = this;
     if (n == 1)
     {
-        return m; // Fin de recursion
+        return c; // Fin de recursion
     }
     else if (n == 0)
     {
-        Matrix<U> ones(m.rown, m.coln);
+        Matrix<T> ones(c.rown, c.coln);
         int i = -1;
-        while (i++ < m.rown)
+        while (i++ < c.rown)
         {
-            ones(i, i) = static_cast<U>(1);
+            ones(i, i) = static_cast<T>(1);
         } // Matriz identidad al elevar a 0
         return ones;
     }
     else
     {
-        return m * operator^(m, n - 1); // Recursion
+        return c * operator^(n - 1); // Recursion
     }
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////[Igualador]//////////////////////////////////////////////////////////////////////////
+template <class T> // Norma de Frabenius
+
+T Matrix<T>::norm(Matrix<T> A){
+
+    sqrt((trace(transpose(A)*A)));
+
+}
+
+template <class T> // Norma de Frabenius
+
+T Matrix<T>::trace(Matrix<T> A){
+//ver si es cuadrada dar error si no, calcular suma con un bucle etc...
+    T c;
+     if (rows == A.rows && cols == A.cols)
+    { // Si esta permitida 
+        for (int i = 0; i < rows; i++)
+        {
+            c += A(i,i);
+        }
+        return c;
+    }
+    else
+    {
+        throw inv_size(A.rows, A.cols, A.rows, A.cols);//Provisional
+    }
+
+}
+//implementar traca etc
+
+////////////////////////////////////////////////////////[Igualador]//////////////////////////////////////////////////////////////////////////
 
 /*Cosas importantes a implementar
 Submatrices

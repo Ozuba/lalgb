@@ -7,6 +7,7 @@
 #include "lalgb/matrixtypes.h"
 #include "lalgb/transpose.h"
 #include "lalgb/gaussjordan.h"
+#include "lalgb/qr.h"
 
 
 

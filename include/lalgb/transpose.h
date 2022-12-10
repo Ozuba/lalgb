@@ -22,14 +22,16 @@ Matrix<T> transpose(Matrix<T> m)
 template <class T>
 Row<T> transpose(Col<T> m)
 {
-  Row<T> t = m;//Funciona pq los datos son contiguas en ambas
+  Row<T> t(m.coln);
+  for(int k = 0; k < m.coln;t(1,k)= m(k++,1));
   return t;
 }
 
 template <class T>
 Col<T> transpose(Row<T> m)
 {
-  Row<T> t = m; 
+  Col<T> t(m.coln);
+  for(int k = 0; k < m.coln;t(1,k)= m(k++,1));
   return t;
 }
 #endif
